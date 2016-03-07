@@ -1,0 +1,6 @@
+[submodule "libdatatransfer"]
+	path = libdatatransfer
+	url = https://github.com/thomash505/libdatatransfer
+[submodule "Catch"]
+	path = Catch
+	url = https://github.com/philsquared/Catch.git
