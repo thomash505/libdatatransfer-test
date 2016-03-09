@@ -7,7 +7,8 @@
 struct serialization_policy
 {
 	enum { INVALID_MESSAGE = 0,
-		   TEST_MESSAGE,
+		   TEST_MESSAGE_1,
+		   TEST_MESSAGE_2,
 		   END_OF_MESSAGES
 		 };
 	enum { NUMBER_OF_MESSAGES = END_OF_MESSAGES - 1 };
@@ -17,6 +18,7 @@ struct serialization_policy
 	{
 		using write_policy = datatransfer::binary_serialization::write_policy<input_output_stream>;
 		using read_policy = datatransfer::binary_serialization::read_policy<input_output_stream>;
+		using checksum_policy = datatransfer::binary_serialization::checksum_policy;
 	};
 
 	template <int N>
@@ -26,14 +28,21 @@ struct serialization_policy
 		static constexpr size_t length = 0;
 	};
 
-	static bool valid(int N) { return N > 0 && N < END_OF_MESSAGES; }
+	static constexpr bool valid(int N) { return N > 0 && N < END_OF_MESSAGES; }
 };
 
 template<>
-struct serialization_policy::data<serialization_policy::TEST_MESSAGE>
+struct serialization_policy::data<serialization_policy::TEST_MESSAGE_1>
 {
 	using type = DTO;
-	static constexpr size_t length = sizeof(DTO);
+	static constexpr size_t length = sizeof(type);
+};
+
+template<>
+struct serialization_policy::data<serialization_policy::TEST_MESSAGE_2>
+{
+	using type = EigenTest;
+	static constexpr size_t length = sizeof(type);
 };
 
 #endif // SERIALIZATION_POLICY_HPP
