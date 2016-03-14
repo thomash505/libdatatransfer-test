@@ -11,9 +11,8 @@ struct DTO
 	DTO() : data(0x0123456789ABCDEF) {}
 
 	template <typename policy>
-	void method(typename policy::stream_type& stream)
+	void method(policy& p)
 	{
-		policy p(stream);
 		p % data;
 	}
 };
@@ -24,9 +23,8 @@ struct EigenTest
 	Eigen::Vector4f vec4;
 
 	template <typename policy>
-	void method(typename policy::stream_type& stream)
+	void method(policy& p)
 	{
-		policy p(stream);
 		p % vec3;
 		p % vec4;
 	}

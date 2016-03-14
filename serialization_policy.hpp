@@ -12,13 +12,15 @@ struct serialization_policy
 		   END_OF_MESSAGES
 		 };
 	enum { NUMBER_OF_MESSAGES = END_OF_MESSAGES - 1 };
+	enum { MAX_MESSAGE_SIZE = 1024 };
 
 	template <typename input_output_stream>
 	struct serialization
 	{
 		using write_policy = datatransfer::binary_serialization::write_policy<input_output_stream>;
-		using read_policy = datatransfer::binary_serialization::read_policy<input_output_stream>;
+		using read_policy = datatransfer::binary_serialization::read_policy<typename input_output_stream::char_type, MAX_MESSAGE_SIZE>;
 		using checksum_policy = datatransfer::binary_serialization::checksum_policy;
+		using size_policy = datatransfer::binary_serialization::size_policy;
 	};
 
 	template <int N>

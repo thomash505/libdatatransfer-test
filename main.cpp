@@ -38,7 +38,7 @@ TEST_CASE()
 		while (!stop)
 		{
 			p2p.read();
-			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	};
 
@@ -47,7 +47,8 @@ TEST_CASE()
 
 	auto handler = [&] (const void* dto)
 	{
-		REQUIRE(reinterpret_cast<const DTO*>(dto)->data == test.data);
+		auto ptr = reinterpret_cast<const DTO*>(dto);
+		REQUIRE(ptr->data == test.data);
 		exit = true;
 	};
 
@@ -85,17 +86,18 @@ TEST_CASE()
 		while (!stop)
 		{
 			p2p.read();
-			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	};
 
 	auto p2p_tx_read_future = std::async(std::launch::async, [&] () { read_func(p2p_tx); });
 	auto p2p_rx_read_future = std::async(std::launch::async, [&] () { read_func(p2p_rx); });
 
-	auto handler = [&] (const void* dto)
+	auto handler = [&] (const void* data)
 	{
-		REQUIRE(reinterpret_cast<const EigenTest*>(dto)->vec3 == test.vec3);
-		REQUIRE(reinterpret_cast<const EigenTest*>(dto)->vec4 == test.vec4);
+		auto ptr = reinterpret_cast<const EigenTest*>(data);
+		REQUIRE(ptr->vec3 == test.vec3);
+		REQUIRE(ptr->vec4 == test.vec4);
 		exit = true;
 	};
 
