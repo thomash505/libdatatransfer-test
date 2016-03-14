@@ -60,7 +60,13 @@ public:
 
 	int16_t get()
 	{
-		read(reinterpret_cast<char_type*>(&_last_read), 1);
+		if (_read_queue.empty())
+		{
+			return -1;
+		}
+
+		_last_read = _read_queue.front();
+		_read_queue.pop_front();
 
 		return _last_read;
 	}
