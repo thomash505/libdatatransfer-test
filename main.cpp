@@ -75,8 +75,8 @@ TEST_CASE()
 	bool exit = false, stop = false;
 
 	EigenTest test;
-	test.vec3 = Eigen::Vector3f::Random();
-	test.vec4 = Eigen::Vector4f::Random();
+	Eigen::Map<Eigen::Vector3f>(test.vec3) = Eigen::Vector3f::Random();
+	Eigen::Map<Eigen::Vector4f>(test.vec4) = Eigen::Vector4f::Random();
 
 	p2p_connector_type p2p_tx(uart1);
 	p2p_connector_type p2p_rx(uart2);
@@ -96,8 +96,8 @@ TEST_CASE()
 	auto handler = [&] (const void* data)
 	{
 		auto ptr = reinterpret_cast<const EigenTest*>(data);
-		REQUIRE(ptr->vec3 == test.vec3);
-		REQUIRE(ptr->vec4 == test.vec4);
+		REQUIRE(Eigen::Map<const Eigen::Vector3f>(ptr->vec3) == Eigen::Map<Eigen::Vector3f>(test.vec3));
+		REQUIRE(Eigen::Map<const Eigen::Vector4f>(ptr->vec4) == Eigen::Map<Eigen::Vector4f>(test.vec4));
 		exit = true;
 	};
 

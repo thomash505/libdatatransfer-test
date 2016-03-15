@@ -19,8 +19,8 @@ struct DTO
 
 struct EigenTest
 {
-	Eigen::Vector3f vec3;
-	Eigen::Vector4f vec4;
+	float vec3[3];
+	float vec4[4];
 
 	template <typename policy>
 	void method(policy& p)
