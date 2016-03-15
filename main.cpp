@@ -26,9 +26,10 @@ TEST_CASE()
 	mock::UART uart1;
 	mock::UART uart2;
 	mock::CommunicationLink<mock::UART, char> commlink(uart1, uart2);
-	bool exit = false, stop = false;
+	static bool exit = false;
+	bool stop = false;
 
-	DTO test;
+	static DTO test;
 
 	p2p_connector_type p2p_tx(uart1);
 	p2p_connector_type p2p_rx(uart2);
@@ -45,10 +46,9 @@ TEST_CASE()
 	auto p2p_tx_read_future = std::async(std::launch::async, [&] () { read_func(p2p_tx); });
 	auto p2p_rx_read_future = std::async(std::launch::async, [&] () { read_func(p2p_rx); });
 
-	auto handler = [&] (const void* dto)
+	auto handler = [] (const DTO& dto)
 	{
-		auto ptr = reinterpret_cast<const DTO*>(dto);
-		REQUIRE(ptr->data == test.data);
+		REQUIRE(dto.data == test.data);
 		exit = true;
 	};
 
@@ -72,9 +72,10 @@ TEST_CASE()
 	mock::UART uart1;
 	mock::UART uart2;
 	mock::CommunicationLink<mock::UART, char> commlink(uart1, uart2);
-	bool exit = false, stop = false;
+	static bool exit = false;
+	bool stop = false;
 
-	EigenTest test;
+	static EigenTest test;
 	Eigen::Map<Eigen::Vector3f>(test.vec3) = Eigen::Vector3f::Random();
 	Eigen::Map<Eigen::Vector4f>(test.vec4) = Eigen::Vector4f::Random();
 
@@ -93,11 +94,10 @@ TEST_CASE()
 	auto p2p_tx_read_future = std::async(std::launch::async, [&] () { read_func(p2p_tx); });
 	auto p2p_rx_read_future = std::async(std::launch::async, [&] () { read_func(p2p_rx); });
 
-	auto handler = [&] (const void* data)
+	auto handler = [] (const EigenTest& data)
 	{
-		auto ptr = reinterpret_cast<const EigenTest*>(data);
-		REQUIRE(Eigen::Map<const Eigen::Vector3f>(ptr->vec3) == Eigen::Map<Eigen::Vector3f>(test.vec3));
-		REQUIRE(Eigen::Map<const Eigen::Vector4f>(ptr->vec4) == Eigen::Map<Eigen::Vector4f>(test.vec4));
+		REQUIRE(Eigen::Map<const Eigen::Vector3f>(data.vec3) == Eigen::Map<Eigen::Vector3f>(test.vec3));
+		REQUIRE(Eigen::Map<const Eigen::Vector4f>(data.vec4) == Eigen::Map<Eigen::Vector4f>(test.vec4));
 		exit = true;
 	};
 
